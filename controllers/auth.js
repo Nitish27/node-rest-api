@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const register = asyncWrapper(async(req, res) => {
-  
   //Get User input
   const { first_name, last_name, email, password } = req.body
 
@@ -45,6 +44,41 @@ const register = asyncWrapper(async(req, res) => {
   res.status(200).json({ client })
 })
 
+
+const login = asyncWrapper(async(req, res) => {
+  try {
+    console.log(req.body)
+    const {email, password} = req.body
+
+    if(!(email && password)) {
+      res.status(400).send('All input is required')
+    } 
+
+    const client = await Client.findOne({ email });
+
+    if(client && (await bcrypt.compare(password, client.password))) {
+      const token = jwt.sign(
+        { client_id: client._id, email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: '2h'
+        }
+      )
+
+      //save user token
+      // client.token = token;
+
+      // user
+      res.status(200).json({ token })
+    }
+
+    res.status(400).send("Invalid credentials");
+  } catch (err) {
+    console.log(err);
+  }
+})
+
 module.exports = {
-  register
+  register,
+  login
 }
