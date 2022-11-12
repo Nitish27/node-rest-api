@@ -78,6 +78,7 @@ const login = asyncWrapper(async(req, res) => {
   }
 })
 
+
 module.exports = {
   register,
   login
