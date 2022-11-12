@@ -3,6 +3,7 @@ const asyncWrapper = require('../middleware/async')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+
 const register = asyncWrapper(async(req, res) => {
   //Get User input
   const { first_name, last_name, email, password } = req.body
